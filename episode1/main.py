@@ -448,7 +448,7 @@ while True:
             score = 0
             scroll_x = 0
             player.rect.x = player.DEFAULT_X
-            player.rect.y = 0
+            player.rect.y = player.DEFAULT_Y
             generate_tiles()
             pg.mixer.music.play(-1)
     
