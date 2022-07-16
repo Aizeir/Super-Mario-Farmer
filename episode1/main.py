@@ -282,7 +282,7 @@ while True:
 
     # Jump (calcul): https://www.techwithtim.net/tutorials/game-development-with-python/pygame-tutorial/jumping/
     if player.is_jumping:
-        if player.jump_count >= -player.jump_height:
+        if player.jump_count > 0:
             dy -= (player.jump_count * abs(player.jump_count)) * 0.05
             player.jump_count -= 1
         else:
