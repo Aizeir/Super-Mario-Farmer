@@ -1,5 +1,5 @@
 import pygame as pg
-from player1 import Player
+from player import Player
 from tile import Tile
 pg.init()
 
@@ -86,6 +86,8 @@ while True:
         elif e.type == pg.KEYUP:
             if e.key == pg.K_q: movement[0] = 0
             if e.key == pg.K_d: movement[0] = 0
+            if e.key == pg.K_LEFT: movement[0] = 0
+            if e.key == pg.K_RIGHT: movement[0] = 0
 
 
     screen.blit(pg.transform.scale(display, (W, H)), (0,0))
