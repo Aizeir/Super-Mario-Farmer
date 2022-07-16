@@ -5,6 +5,7 @@ class Player:
 
     def __init__(self):
         
+        # les images/animations...
         self.images_left = [pg.image.load("assets/mario_0.png").convert_alpha(), pg.image.load("assets/mario_1.png").convert_alpha()]
         self.images_right = [pg.transform.flip(x, True, False) for x in self.images_left]
         self.image_left_jump = pg.image.load("assets/mario_jump.png").convert_alpha()
@@ -19,11 +20,13 @@ class Player:
         self.images_len = len(self.images_left)
         self.images_cooldown = 0
         self.image = self.images_left[self.image_idx]
-
+           
+        # Rect
         self.rect = self.images_left[0].get_rect()
         self.rect.x = self.DEFAULT_X
-
-        self.xdir = 1
+        self.rect.y = self.DEFAULT_Y
+            
+        self.xdir = 1 # si le joueur va a droite ou a gauche
         self.speed = 2
         self.jump_height = 17
         self.jump_count = self.jump_height
@@ -32,14 +35,14 @@ class Player:
         self.is_grounded = False
         self.is_tall = False
 
-        self.immune = 0
+        self.immune = 0 # timer immune
 
     def jump(self):
         if self.is_grounded:
             self.is_jumping = True
             self.jump_count = self.jump_height
 
-    def died_jump(self):
+    def died_jump(self): # le saut de quand il est mort: un peu moins haut
         self.jump()
         self.jump_count = 15
 
