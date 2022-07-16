@@ -26,7 +26,7 @@ class Player:
         self.rect.x = self.DEFAULT_X
         self.rect.y = self.DEFAULT_Y
             
-        self.xdir = 1 # si le joueur va a droite ou a gauche
+        self.xdir = 1 # si le joueur va a droite ou a gauche: ca sert pas a grand-chose juste pour les animations
         self.speed = 2
         self.jump_height = 17
         self.jump_count = self.jump_height
