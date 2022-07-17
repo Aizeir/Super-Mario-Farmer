@@ -449,6 +449,7 @@ while True:
             scroll_x = 0
             player.rect.x = player.DEFAULT_X
             player.rect.y = player.DEFAULT_Y
+            player.is_tall = False
             generate_tiles()
             pg.mixer.music.play(-1)
     
