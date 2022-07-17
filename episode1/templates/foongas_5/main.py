@@ -103,7 +103,7 @@ while True:
             if player.rect.bottom<foonga.rect.top:
                 to_delete.append(foonga)
 
-            elif player.immune == 0: pass
+            else: pass
                 # Tuer le joueur
 
         # movement / collisions
