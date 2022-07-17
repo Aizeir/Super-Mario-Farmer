@@ -1,5 +1,5 @@
 import pygame as pg
-from player1 import Player
+from player import Player
 from tile import Tile
 from foonga import Foonga
 pg.init()
