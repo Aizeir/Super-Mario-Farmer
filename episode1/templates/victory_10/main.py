@@ -65,10 +65,10 @@ def generate_tiles():
             if id in tile_imgs:
                 tiles[x, y] = Tile(x, y, id)
 
-                if id == 'd': # si c'est le haut du pilier la ou commence le drapeau
-                    global flag_pos, initial_flag_y
-                    initial_flag_y = y*Tile.SIZE
-                    flag_pos = [x*Tile.SIZE, initial_flag_y]
+            elif id == 'd': # Si c'est le haut du plilier, la ou commence le drapeau
+                global flag_pos, initial_flag_y
+                initial_flag_y = y*Tile.SIZE
+                flag_pos = [x*Tile.SIZE, initial_flag_y]
 
             elif id == "F":
                 foongas.append(Foonga(x*Tile.SIZE, y*Tile.SIZE+2))
