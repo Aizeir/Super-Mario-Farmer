@@ -317,7 +317,7 @@ while True:
                 player.rect.x = player.DEFAULT_X
                 player.rect.y = player.DEFAULT_Y
                 player.set_small()
-                player.immune = False
+                player.immune = 0
                 player.xdir = 1
                 player.image_idx = 0
                 generate_tiles()
