@@ -6,23 +6,29 @@ from foonga import Foonga
 from toad import Toad
 pg.init()
 
+# Constantes
 W, H = 960, 540
 scale = 3
 FPS = 30
 
+gravity = 4
+MAX_LIVES = 3
+
+# Set Caption
 pg.display.set_caption("Super Mario Farmer")
 
+# Screen/Display/Clock
 screen = pg.display.set_mode((W, H))
 display = pg.Surface((W//scale, H//scale))
 clock = pg.time.Clock()
 
+# Background
 background = pg.image.load("assets/background.png").convert()
 
+# Police d'écriture
 font = pg.font.Font("assets/font.ttf", 20)
 
-gravity = 4
-MAX_LIVES = 3
-
+# Player
 player = Player()
 movement = [0, gravity]
 
@@ -31,19 +37,23 @@ coins = 0
 lives = MAX_LIVES
 died = 0
 
-won = False
-win_time = 0
-cant_move = False
+won = False # est-ce que le joueur a gagné
+win_time = 0 # timer de victoire (pour passer d'une musique à l'autre) bon vous verrez a quoi ca sert
+cant_move = False # freeze le joueur
 
+# Pause/Mute
 paused = False
 muted = False
 
+# Timer
 TIMER = 400*FPS
 timer = TIMER
 
+# Scroll
 true_scroll_x = 0
 scroll_x = 0
 
+# Id: Image
 tile_imgs = {
     "f": pg.image.load("assets/floor.png").convert(),
     "b": pg.image.load("assets/brick.png").convert(),
@@ -58,13 +68,15 @@ tile_imgs = {
 }
 
 not_solid_ids = ['db', 'd'] # Tiles ou on peut passer à travers
-tiles = {}
-foongas = []
-toads = []
+tiles = {} # Dictionnaire des Tiles
+foongas = [] # Liste des foongas (goombas) me demandez pas pourquoi jai choisi ce nom
+toads = [] # Liste des toads
 
-flag_pos = [] # Position du flag (FLAG = triangle qui descend quand tu gagnes)
+# Infos sur le drapeau: position, image, position Y initiale
+# drapeau = petit triangle qui descend quand tu gagnes
+flag_pos = []
 flag_img = pg.image.load("assets/flag.png").convert()
-initial_flag_y = 0 # Y initial du flag
+initial_flag_y = 0
 
 def generate_tiles():
     map = open("assets/map.txt").read()
@@ -74,14 +86,17 @@ def generate_tiles():
             if id in tile_imgs:
                 tiles[x, y] = Tile(x, y, id)
 
-                if id == 'd': # Si c'est le haut du pilier, la ou commence le drapeau
+                # Drapeau (noter position...)
+                if id == 'd': 
                     global flag_pos, initial_flag_y
                     initial_flag_y = y*Tile.SIZE
                     flag_pos = [x*Tile.SIZE, initial_flag_y]
 
+            # Foongas (goombas)
             elif id == "F":
                 foongas.append(Foonga(x*Tile.SIZE, y*Tile.SIZE+2))
 
+# Bon je l'ai mis la mais mettez le ou vous voulez
 generate_tiles()
 
 # Logo
@@ -113,8 +128,9 @@ coin_right_img = pg.image.load("assets/coin_right.png").convert_alpha()
 coin_img_list = [coin_img, coin_left_img, coin_img, coin_right_img]
 
 coin_anims = [] # (pos, time)
-used_blocks = []
+used_blocks = [] # Luckyblocks utilisés
 
+# Fonction pour les interaction joueur-bloc (luckyblocks/drapeau...)
 def on_tile_collision(tile, side):
     if side == "bottom" and tile not in used_blocks:
         used_blocks.append(tile)
@@ -143,10 +159,12 @@ def on_tile_collision(tile, side):
         cant_move = True
         won = True
 
+# Fonction pour mute/demute tous les sone à la fois
 def set_sound_volume(vol):
     for s in sounds:
         s.set_volume(vol)
 
+# Tuer le joueur
 def die():
     global died
     died = FPS*2
@@ -162,9 +180,10 @@ while True:
         true_scroll_x += (player.rect.x+player.rect.w/2-true_scroll_x-W/scale/2) / 1
         scroll_x = max(scroll_x, int(true_scroll_x))
 
+        # Mouvement
         dx, dy = movement
 
-        # Jump
+        # Jump (calcul): https://www.techwithtim.net/tutorials/game-development-with-python/pygame-tutorial/jumping/
         if player.is_jumping:
             if player.jump_count > 0:
                 dy -= (player.jump_count * abs(player.jump_count)) * 0.05
@@ -196,19 +215,21 @@ while True:
                         on_tile_collision(tile, "bottom")
 
         # Foongas
-        to_delete = []
+        to_delete = [] # bon ca cest juste pour pouvoir supprimer les foongas pendant l'iteration
         for foonga in foongas:
 
-            # player collision
+            # collision joueur
             if not died and foonga.rect.colliderect(player.rect.x+dx, player.rect.y+dy, player.rect.w, player.rect.h):
+                # Si le joueur l'attaque par le haut (si le joueur est plus haut que le foonga) rappelez vous on a pas encore appliqué le mouvement au joueur !
                 if player.rect.bottom<foonga.rect.top:
                     to_delete.append(foonga)
                     foonga_sound.play()
                     score += 100
 
-                elif player.immune == 0:
-                    if player.is_tall: player.set_small()
-                    else: die()
+                elif player.immune == 0: # Sinon si il est pas 'immune'
+                    if player.is_tall: player.set_small() # SET SMALL
+                    else: die() # PLAYER DIED
+
 
             # movement / collisions
             foonga_dy = gravity
@@ -219,6 +240,7 @@ while True:
                 if tile.rect.colliderect(foonga.rect.x, foonga.rect.y+foonga_dy, foonga.rect.w, foonga.rect.h):
                     foonga_dy = tile.rect.top - foonga.rect.bottom
             
+            # appliquer mouvement foonga
             foonga.rect.x += foonga.move
             foonga.rect.y += foonga_dy
 
@@ -243,25 +265,26 @@ while True:
                 if tile.rect.colliderect(toad.rect.x, toad.rect.y+toad_dy, toad.rect.w, toad.rect.h):
                     toad_dy = tile.rect.top - toad.rect.bottom
             
+            # appliquer mouvement foonga
             toad.rect.x += toad.move
             toad.rect.y += toad_dy
         
         toads = [t for t in toads if t not in to_delete]
         
-        # Apply movement
+        # Appliquer movement joueur
         player.rect.x += dx
         player.rect.y += dy
         player.rect.x = max(player.rect.x, scroll_x)
 
-        # Player.is_grounded
+        # Player.is_grounded: savoir si il est par terre (jump)
         player.is_grounded = dy == 0
         
-        # Player.immune
+        # Player.immune (cad le joueur n'est pas tué: c'est quand il vient de se faire boloss alors qi'il etait 'grand')
         if player.immune > 0:
             player.immune -= 1
 
         # Player Animation
-        # increment image_idx
+        # la c pour les animations de marche, regler le cooldown entre chaque frame (player.images_cooldow) et l'index de l'image actuelle (player.image_idx)
         if dx != 0:
             player.xdir = dx/abs(dx)
 
@@ -271,7 +294,7 @@ while True:
             else:
                 player.images_cooldown -= 1
         
-        # Select player image
+        # bon la c pour connaitre quelle image le joueur doit avoir (si il saute/est grand...)
         player_jumping = player.is_jumping and not player.is_grounded
         if player.xdir < 0:
             if player.is_tall and player_jumping:
@@ -339,10 +362,11 @@ while True:
             timer -= 1
             if timer == 0: die()
 
+        # une alerte quand il reste 10 secondes (je sais pas c comment dans le jeu mais pg)
         if timer == 10*FPS and not died and not won:
             time_warn_sound.play()
 
-        # Victoire
+        # quand le joueur gagne
         if win_time > 0 and not died:
             win_time -= 1
             flag_pos[1] = min(initial_flag_y+Tile.SIZE*6, flag_pos[1]+3)
