@@ -316,7 +316,7 @@ while True:
                 scroll_x = 0
                 player.rect.x = player.DEFAULT_X
                 player.rect.y = player.DEFAULT_Y
-                player.is_tall = False
+                player.set_small()
                 player.immune = False
                 player.xdir = 1
                 player.image_idx = 0
