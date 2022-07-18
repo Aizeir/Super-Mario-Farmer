@@ -45,6 +45,7 @@ tile_imgs = {
     "T": pg.image.load("assets/tube_top.png").convert(),
     "a": pg.image.load("assets/cube.png").convert(),
     'db': pg.image.load("assets/flag_beam.png").convert(),
+    'd': pg.image.load("assets/flag_top.png").convert(),
 }
 
 
